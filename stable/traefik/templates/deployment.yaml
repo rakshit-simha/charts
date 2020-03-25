@@ -1,4 +1,4 @@
-{{- if semverCompare "^1.9-0" .Capabilities.KubeVersion.GitVersion }}
+{{- .Capabilities.APIVersions.Has "apps/v1" }}
 apiVersion: apps/v1
 {{- else }}
 apiVersion: apps/v1beta1
@@ -34,7 +34,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-      {{- if and (.Values.tolerations) (semverCompare "<1.6-0" .Capabilities.KubeVersion.GitVersion) }}
+      {{- if and (.Values.tolerations) (semverCompare "<1.6-0" .Capabilities.KubeVersion.Version) }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
       {{- end }}
       {{- range $key, $value := .Values.deployment.podAnnotations }}
@@ -233,7 +233,7 @@ spec:
         secret:
           secretName: {{ template "traefik.fullname" $ }}-secrets
       {{- end }}
-      {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion) }}
+      {{- if and (.Values.tolerations) (semverCompare "^1.6-0" .Capabilities.KubeVersion.Version) }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
       {{- end }}

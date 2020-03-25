@@ -5,7 +5,7 @@ metadata:
   name: {{ template "traefik.fullname" . }}
 ---
 kind: {{ include "traefik.rbac.scope" . | printf "%sRole" }}
-{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+{{- .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" }}
 apiVersion: rbac.authorization.k8s.io/v1
 {{- else }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -40,7 +40,7 @@ rules:
       - update
 ---
 kind: {{ include "traefik.rbac.scope" . | printf "%sRoleBinding" }}
-{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion }}
+{{- .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" }}
 apiVersion: rbac.authorization.k8s.io/v1
 {{- else }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
